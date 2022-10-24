@@ -1,0 +1,85 @@
+,Cat
+,unique
+CommCode,
+AFK,['OZ' 'CC' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+ALP,['AA' 'AT' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+BDL,['CU' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AE' 'AG' 'AP' 'AM']
+BTF,['CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+CDF,['AA' 'TA' 'AE' 'AP']
+CEN,['CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+CHL,['AA' 'AT' 'TT' 'TA' 'AE' 'AG' 'AP' 'AM']
+CLI,['CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+CLR,"['OZ' 'CU' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP'
+ 'AM']"
+CMT,['CN' 'AA' 'TA' 'AP']
+COT,['CU' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+DRA,['CU' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+EAG,['CC' 'AA' 'AT' 'TT' 'TA' 'AC' 'AE' 'AG' 'AP' 'AM']
+ELK,['AA' 'TA' 'AE' 'AP']
+FFD,['AA' 'TA' 'AP']
+FRM,['CU' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AE' 'AG' 'AP' 'AM']
+FRR,['CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AE' 'AG' 'AP' 'AM']
+FRU,['AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+GEN,['AA' 'TA' 'AG' 'AP']
+GOS,['AA' 'AE' 'AP']
+HAR,['CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+HER,['CC' 'CN' 'AA' 'AT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+HGH,['CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+HOL,['CC' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+HOO,['AA' 'AT' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP']
+KAY,"['OZ' 'CU' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP'
+ 'AM']"
+KMT,['OZ' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+LAY,['OZ' 'CU' 'CC' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+LEH,['CU' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+LIN,['CC' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+MAP,['AA' 'AT' 'TA' 'AC' 'AE' 'AG' 'AP' 'AM']
+MID,"['OZ' 'CU' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP'
+ 'AM']"
+MLC,['OZ' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+MMT,['OZ' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+MSL,['AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AE' 'AG' 'AP' 'AM']
+MUR,"['OZ' 'CU' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP'
+ 'AM']"
+NOG,['CC' 'CN' 'AA' 'AT' 'TT' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+NSL,['OZ' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AE' 'AG' 'AP' 'AM']
+OGD,"['OZ' 'CM' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP'
+ 'AM']"
+ORE,['CU' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+PAY,['CC' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+PGR,['CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+PLN,['CN' 'AA' 'TF' 'TA' 'AC' 'AE' 'AG' 'AP' 'AM']
+PVO,['OZ' 'CU' 'CC' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+PVW,['CC' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+ROY,['CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+RVD,['OZ' 'CC' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+RVT,['CC' 'AA' 'AT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+SAN,"['OZ' 'CU' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP'
+ 'AM']"
+SAQ,['AA' 'AT' 'TT' 'TF' 'TA' 'AH' 'AE' 'AG' 'AP' 'AM']
+SAR,['CC' 'AA' 'AT' 'TT' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+SFK,['CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+SJC,['CU' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+SLC,"['OZ' 'CM' 'CU' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG'
+ 'AP' 'AM']"
+SLM,['CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+SOG,['OZ' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+SPV,['OZ' 'CC' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+SSL,['OZ' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+SUN,['OZ' 'CC' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+SWE,['AA' 'AT' 'TT' 'TF' 'TA' 'AH' 'AE' 'AG' 'AP' 'AM']
+SYR,['CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+TAY,"['OZ' 'CU' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP'
+ 'AM']"
+UIN,['AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+VIN,['CC' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AE' 'AG' 'AP' 'AM']
+WBO,['CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+WCR,['CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+WDL,['AA' 'TA' 'AP']
+WHV,['CC' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+WJC,['OZ' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+WMT,['CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+WPT,['CC' 'CN' 'AA' 'AT' 'TT' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP']
+WTR,['CC' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP' 'AM']
+WVC,"['OZ' 'CU' 'CC' 'CN' 'AA' 'AT' 'TT' 'TF' 'TA' 'AC' 'AH' 'AE' 'AG' 'AP'
+ 'AM']"

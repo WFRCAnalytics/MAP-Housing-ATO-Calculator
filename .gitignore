@@ -1,4 +1,8 @@
 data/remm_base_year_2019_20220401.gdb
+data/remm_base_year_20221003/*
+data/UtahRoadsNetworkAnalysis/*
 data/UtahRoadsNetworkAnalysis_gdb/
 results/HousingSuitability.gdb/*
 gis/HousingSuitability.gdb/*
+results/Parcels.geojson
+intermediate/*

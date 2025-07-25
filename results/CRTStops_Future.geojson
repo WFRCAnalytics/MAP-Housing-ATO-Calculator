@@ -1,0 +1,16 @@
+{
+"type": "FeatureCollection",
+"name": "CRTStops_Future",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "ID": 8, "ADDRESS": "2700 N Hwy 89, Pleasant View", "NAME": "Pleasant View", "PARKNRIDE": "Yes", "Temp": 0, "Status": "Future", "MPO": "WFRC", "Vision": "Yes" }, "geometry": { "type": "Point", "coordinates": [ -112.011020687837075, 41.308258928762136 ] } },
+{ "type": "Feature", "properties": { "ID": 0, "ADDRESS": "Springville", "NAME": "Springville", "PARKNRIDE": null, "Temp": 0, "Status": "Future", "MPO": "MAG", "Vision": "Yes" }, "geometry": { "type": "Point", "coordinates": [ -111.637728133670691, 40.16248095283018 ] } },
+{ "type": "Feature", "properties": { "ID": 0, "ADDRESS": "Spanish Fork", "NAME": "Spanish Fork", "PARKNRIDE": null, "Temp": 0, "Status": "Future", "MPO": "MAG", "Vision": "Yes" }, "geometry": { "type": "Point", "coordinates": [ -111.678436419142116, 40.11047181537387 ] } },
+{ "type": "Feature", "properties": { "ID": 0, "ADDRESS": "Payson", "NAME": "Payson", "PARKNRIDE": null, "Temp": 0, "Status": "Future", "MPO": "MAG", "Vision": "Yes" }, "geometry": { "type": "Point", "coordinates": [ -111.760345017256995, 40.032410069544405 ] } },
+{ "type": "Feature", "properties": { "ID": 0, "ADDRESS": "Bluffdale 14600 South", "NAME": "Bluffdale", "PARKNRIDE": null, "Temp": 0, "Status": "Future", "MPO": "WFRC", "Vision": "Yes" }, "geometry": { "type": "Point", "coordinates": [ -111.927023967090847, 40.478794600969429 ] } },
+{ "type": "Feature", "properties": { "ID": 0, "ADDRESS": "Centerville", "NAME": "Centerville", "PARKNRIDE": null, "Temp": 0, "Status": "Future", "MPO": "WFRC", "Vision": "Yes" }, "geometry": { "type": "Point", "coordinates": [ -111.894810926213438, 40.921706622418377 ] } },
+{ "type": "Feature", "properties": { "ID": 0, "ADDRESS": "Sunset", "NAME": "Sunset", "PARKNRIDE": null, "Temp": 0, "Status": "Future", "MPO": "WFRC", "Vision": "Yes" }, "geometry": { "type": "Point", "coordinates": [ -112.035564301223928, 41.140177805686541 ] } },
+{ "type": "Feature", "properties": { "ID": 0, "ADDRESS": "Ogden", "NAME": "Ogden BDO", "PARKNRIDE": null, "Temp": 0, "Status": "Future", "MPO": "WFRC", "Vision": "Yes" }, "geometry": { "type": "Point", "coordinates": [ -111.989489182549278, 41.251851960263444 ] } },
+{ "type": "Feature", "properties": { "ID": 0, "ADDRESS": "800 North, Vineyard", "NAME": "Vineyard", "PARKNRIDE": null, "Temp": 0, "Status": "Planned", "MPO": "MAG", "Vision": "Y" }, "geometry": { "type": "Point", "coordinates": [ -111.749242138263455, 40.311453173287525 ] } }
+]
+}

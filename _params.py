@@ -38,7 +38,7 @@ strInterchangesIn_Fut  = os.path.join(dirData, r"Roadway_Point_Projects_(2019-20
 strInterchangesOut_Cur = os.path.join(dirResults, "Interchanges.geojson")
 strInterchangesOut_Fut = os.path.join(dirResults, "Interchanges_Future.geojson")
 
-strRoadsIn = os.path.join(dirData, r"UtahRoadsNetworkAnalysis/Roads.shp")
+strRoadsIn = os.path.join(dirData, r"UtahRoadsNetworkAnalysis_gdb/UtahRoadsNetworkAnalysis.gdb")
 
 strATCycleTracksOut_Cur = os.path.join(dirResults, "ATCycleTracks.geojson")
 strATCycleTracksOut_Fut = os.path.join(dirResults, "ATCycleTracks_Future.geojson")
@@ -64,8 +64,8 @@ strCommunityCenterOut = os.path.join(dirResults, "CommunityCenter.geojson")
 strQOZIn  = os.path.join(dirData, r"Utah_Qualified_Opportunity_Zones-shp/UtahQualifiedOpportunityZones.shp")
 strQOZOut = os.path.join(dirResults, "UtahQualifiedOpportunityZones.geojson")
 
-strParcelsIn   = os.path.join(dirData, r"remm_base_year_20221003/parcels.shp")
-strBuildingsIn = os.path.join(dirData, r"remm_base_year_20221003/buildings.shp")
+strParcelsIn   = os.path.join(dirData, r"remm_base_year_20221003/remm_base_year.gdb")
+strBuildingsIn = os.path.join(dirData, r"remm_base_year_20221003/remm_base_year.gdb")
 strParcelsOut  = os.path.join(dirResults, "Parcels.geojson")
 
 strMunicipalitiesIn = os.path.join(dirData, r"Utah_Municipal_Boundaries/Utah_Municipal_Boundaries.shp")

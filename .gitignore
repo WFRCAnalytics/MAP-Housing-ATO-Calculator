@@ -6,3 +6,5 @@ results/HousingSuitability.gdb/*
 gis/HousingSuitability.gdb/*
 results/Parcels.geojson
 intermediate/*
+HousingSuitability.ipynb
+*/UNIONED.geojson

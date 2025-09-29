@@ -1,4 +1,6 @@
 data/remm_base_year_2019_20220401.gdb
 data/UtahRoadsNetworkAnalysis_gdb/
 results/HousingSuitability.gdb/*
+results/HousingSuitability_Centers2025.gdb/*
 gis/HousingSuitability.gdb/*
+results/UNIONED_withCenters202505.gpkg

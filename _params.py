@@ -76,3 +76,5 @@ strTAZIn      = os.path.join(dirData, r"USTM_TAZ/TAZ.shp")
 strAtoWfrc    = os.path.join(dirData, r"ATO_TDM_Output/ATO19_WFRC.csv")
 
 strTAZwithATOOut = os.path.join(dirResults, "TAZWithATOScores.geojson")
+
+strRegionalBoundaryIn = os.path.join(dirData, r"WFRC_RegionalBoundaryComponents/WFRC_Regional_Boundary_Components.shp")

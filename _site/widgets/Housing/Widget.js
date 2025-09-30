@@ -19,9 +19,9 @@ var sClickConfirmation = "Use mouse to select district(s) on map. Do not click o
 
 var dLandUseFilter = [
   { label: "All Land Uses", value: "'AG','EM','OS','CH','SF','MF','GQ','GO','ED','HE','RE','OF','IN','OT','UT','NB','NO'" },
-  { label: "Single-Family Residential", value: "'CH','SF'" },
-  //  { label: "All Other Land Uses"      , value: "'MF','GQ','GO','ED','HE','RE','OF','IN'"                                             }
-  { label: "All Other Land Uses", value: "'AG','EM','OS','MF','GQ','GO','ED','HE','RE','OF','IN','OT','UT','NB','NO'" }
+  { label: "Residential", value: "'SF','MF'" }, // Single Family, Multi Family
+  { label: "Commercial", value: "'HE','RE','OF','IN'"}//, // Heathcare, Retail, Office, Industrial
+  //{ label: "Undeveloped", value: "'AG','NB'"} // Agriculture, No Building
 ];
 
 var aCategories = ['CM', 'CU', 'CC', 'CN', 'AA', 'AT', 'TT', 'TF', 'TA', 'AC', 'AH', 'AE', 'AG', 'AM', 'AP'];

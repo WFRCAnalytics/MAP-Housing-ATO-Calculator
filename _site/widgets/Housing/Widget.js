@@ -61,7 +61,7 @@ var aCategoryWeights = [];
 
 // need some kind of container to save weights so that toggling between communities with or without the category, the value is saved somewhere....
 // use aCategories as index array
-var aCategoryWeights_Saved = ['1.0000', '1.0000', '1.0000', '1.0000', '1.0000', '1.0000', '1.0000', '1.0000', '1.0000', '1.0000', '1.0000', '1.0000', '1.0000', '1.0000', '1.0000'];
+var aCategoryWeights_Saved = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5];
 
 var sCurCommunities = "";
 var dCurCommunities = [];
@@ -127,8 +127,9 @@ define(['dojo/_base/declare',
   'jimu/PanelManager',
   'esri/graphic',
   'dojo/store/Memory',
-  'dijit/form/HorizontalSlider'],
-  function (declare, dom, BaseWidget, CheckBox, html, domReady, PanelManager, FeatureLayer, LayerInfos, Select, Button, ComboBox, Query, QueryTask, Extent, UniqueValueRenderer, SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Color, PanelManager, Graphic, Memory, HorizontalSlider) {
+  'dijit/form/HorizontalSlider',
+  'dijit/registry'],
+  function (declare, dom, BaseWidget, CheckBox, html, domReady, PanelManager, FeatureLayer, LayerInfos, Select, Button, ComboBox, Query, QueryTask, Extent, UniqueValueRenderer, SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Color, PanelManager, Graphic, Memory, HorizontalSlider, registry) {
     //To create a widget, you need to derive from BaseWidget.
     return declare([BaseWidget], {
       // Custom widget code goes here
@@ -174,7 +175,7 @@ define(['dojo/_base/declare',
             {
               minimum: 0,
               maximum: 1,
-              discreteValues: 11,
+              discreteValues: 5,
               value: curSlideValues[cat],
               intermediateChanges: true,
               onChange: function () {
@@ -834,8 +835,11 @@ define(['dojo/_base/declare',
 
       _turnoffall: function () {
         for (let i = 0; i < aCategories.length; i++) {
-          dom.byId('horizslider' + aCategories[i]).value = "0.0000";
-          aCategoryWeights_Saved[i] = "0.0000";
+          var slider = registry.byId("horizslider" + aCategories[i]);
+          if (slider) {
+            slider.set("value", 0.0); // use .set() rather than direct assignment
+          }
+          aCategoryWeights_Saved[i] = 0;
         }
         wH._updateDisplay();
       }

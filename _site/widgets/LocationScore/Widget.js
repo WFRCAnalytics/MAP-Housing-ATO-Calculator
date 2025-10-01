@@ -17,7 +17,8 @@ define([
   'dojox/charting/axis2d/Default',
   'dojox/charting/action2d/Tooltip',
   'dojox/charting/action2d/Highlight',
-  'dojox/charting/widget/Legend'
+  'dojox/charting/widget/Legend',
+  'dojo/on'
 ], function(
   declare,
   dom,
@@ -36,27 +37,56 @@ define([
   DefaultAxis,
   Tooltip,
   Highlight,
-  Legend
+  Legend,
+  on
 ) {
   return declare([BaseWidget], {
     baseClass: 'jimu-widget-customwidget',
 
     startup: function() {
       this.inherited(arguments);
-      console.log('startup');
-
-      // expose instance
       wLS = this;
 
-      // chart handles
       this._chart = null;
-      this._legend = null;
+      this._detailsShown = false; // tables hidden by default
 
-      // turn off info window (popup) when clicking a feature
       this.map.setInfoWindowOnClick(false);
 
-      // initial render
+      // Wire the toggle button if present
+      var btn = dom.byId('detailsToggle');
+      if (btn) {
+        on(btn, 'click', function() { wLS._toggleDetails(); });
+        // Ensure initial label/state
+        wLS._applyDetailsVisibility();
+      }
+
       wLS._updateScores();
+    },
+
+    _toggleDetails: function() {
+      this._detailsShown = !this._detailsShown;
+      this._applyDetailsVisibility();
+    },
+
+    _applyDetailsVisibility: function() {
+      var btn = dom.byId('detailsToggle');
+      var wrap = dom.byId('detailsTables'); // preferred wrapper
+      var top = dom.byId('scoreTableTop');
+      var bottom = dom.byId('scoreTableBottom');
+
+      // If wrapper exists, just toggle it; else toggle both tables
+      if (wrap) {
+        wrap.style.display = this._detailsShown ? '' : 'none';
+      } else {
+        if (top) top.style.display = this._detailsShown ? '' : 'none';
+        if (bottom) bottom.style.display = this._detailsShown ? '' : 'none';
+      }
+
+      // Button label & a11y
+      if (btn) {
+        btn.textContent = this._detailsShown ? 'Hide details' : 'See details';
+        btn.setAttribute('aria-expanded', this._detailsShown ? 'true' : 'false');
+      }
     },
 
     _updateScores: function() {
@@ -83,6 +113,11 @@ define([
         if (bottom) bottom.innerHTML = '';
         var titleNode = dom.byId('scoreChartTitle');
         if (titleNode) titleNode.textContent = '';
+        var btn = dom.byId('detailsToggle');
+        if (btn) btn.style.display = 'none';
+        // Also hide the details area to avoid a blank block
+        this._detailsShown = false;
+        this._applyDetailsVisibility();
       }
 
       function showParcelPieceResults(results) {
@@ -177,10 +212,10 @@ define([
         bottomHtml += '<tr>' +
           '<td><strong>&nbsp;</strong></td>' +
           '<td align="right"><strong>Places</strong></td>' +
-          '<td align="right"><strong>Emp.</strong><br/><strong>Access</strong></td>' +
-          '<td><strong>Transp.</strong></td>' +
-          '<td align="center"><strong>Comm.</strong><br/><strong>Necess.</strong></td>' +
-          '<td align="center"><strong>Total</strong></td>' +
+          '<td align="right"><strong>Employ.</strong></td>' +
+          '<td align="right"><strong>Transp.</strong></td>' +
+          '<td align="right"><strong>Necess.</strong></td>' +
+          '<td align="right"><strong>Total  </strong></td>' +
           '</tr>';
 
         var strCommunityText;
@@ -230,12 +265,19 @@ define([
         topTbl.innerHTML = topHtml;
         bottomTbl.innerHTML = bottomHtml;
 
+        // Ensure the toggle & visibility are consistent after new data is written
+        wLS._applyDetailsVisibility();
+
+        // Optionally show the toggle button only when we have data
+        var btn = dom.byId('detailsToggle');
+        if (btn) btn.style.display = 'inline-block';
+
         // --- build chart data with PERCENT values; y-axis will be 0..100 ---
         var chartData = [
           { label: 'Places',
             y: +pct_places.toFixed(0),
             tooltip: pct_places.toFixed(0) + '% (' + _totalweightedscore_places.toFixed(1) + ' of ' + _communitymaxpossible_places.toFixed(1) + ')' },
-          { label: 'Access',
+          { label: 'Employ.',
             y: +pct_access.toFixed(0),
             tooltip: pct_access.toFixed(0) + '% (' + _totalweightedscore_access.toFixed(1) + ' of ' + _communitymaxpossible_access.toFixed(1) + ')' },
           { label: 'Transp.',
@@ -250,9 +292,10 @@ define([
         ];
 
         // Title can be static or dynamic; here’s a sensible default:
-        wLS._setChartTitle('Percent of Max by Category');
+        wLS._setChartTitle('Weighted Score by Category');
 
-        wLS._renderChart(chartData);      }
+        wLS._renderChart(chartData);
+      }
     },
 
     _setChartTitle: function(text) {
@@ -275,59 +318,54 @@ define([
       var node = dom.byId('scoreChart');
       if (!node) return;
 
+      if (this._chart) { this._chart.destroy(); this._chart = null; }
+
       // Map data to Dojo series format
       var series = seriesData.map(function(d, i){
         return { x: i + 1, y: d.y, tooltip: d.tooltip };
       });
 
-      if (!this._chart) {
-        // First-time init: build chart and axes once
-        var chart = new Chart(node);
-        chart.setTheme(themeClaro);
+      var chart = new Chart(node);
+      chart.setTheme(themeClaro);
 
-        chart.addPlot('default', {
-          type: ColumnsPlot,
-          gap: 6,
-          animate: false        // <- disable animated redraws
-        });
+      chart.addPlot('default', {
+        type: ColumnsPlot,
+        gap: 6,
+        animate: false        // <- disable animated redraws
+      });
 
-        chart.addAxis('x', {
-          labels: seriesData.map(function(d, i){ return { value: i+1, text: d.label }; }),
-          natural: true,
-          minorTicks: false,
-          majorTickStep: 1
-        });
+      chart.addAxis('x', {
+        labels: seriesData.map(function(d, i){ return { value: i+1, text: d.label }; }),
+        natural: true,
+        minorTicks: false,
+        majorTickStep: 1
+      });
 
-        chart.addAxis('y', {
-          vertical: true,
-          includeZero: true,
-          min: 0,
-          max: 100,             // fixed 0–100 for percent scale
-          majorTickStep: 20,
-          fixUpper: 'minor',
-          title: '% of Max',
-          titleOrientation: 'axis',
-          titleGap: 6
-        });
+      chart.addAxis('y', {
+        vertical: true,
+        includeZero: true,
+        min: 0,
+        max: 100,             // fixed 0–100 for percent scale
+        majorTickStep: 20,
+        fixUpper: 'minor',
+        title: 'Weighted Score',
+        titleOrientation: 'axis',
+        titleGap: 6
+      });
 
-        chart.addSeries('Percent of Max', series, {
-          stroke: null,
-          outline: null,
-          shadow: null,
-          fill: '#4a90e2'
-        });
+      chart.addSeries('Weighted Score', series, {
+        stroke: null,
+        outline: null,
+        shadow: null,
+        fill: '#4a90e2'
+      });
 
-        // Keep tooltips; they don't animate the bars
-        new Tooltip(chart, 'default');
+      // Keep tooltips; they don't animate the bars
+      new Tooltip(chart, 'default');
 
-        chart.render();
-        this._chart = chart;
+      chart.render();
+      this._chart = chart;
 
-      } else {
-        // Update existing chart without re-creating it (no animation/flicker)
-        this._chart.updateSeries('Percent of Max', series);
-        this._chart.render();
-      }
     },
 
     // Run onOpen when receiving a message from OremLayerSymbology

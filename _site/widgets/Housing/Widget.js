@@ -339,7 +339,7 @@ define(['dojo/_base/declare',
 
                 dom.byId('addText').innerHTML = sClickOnMapToAddMoreText;
 
-                // if community is already selected, query the parcel layer and show score
+              // if community is already selected, query the parcel layer and show score
               } else {
                 var queryParcelPiece = new QueryTask(lyrParcelPieces.url);
                 queryParcelPiece.execute(query, clickParcelPiece);
@@ -597,6 +597,18 @@ define(['dojo/_base/declare',
         lyrParcelPieces.setRenderer(vcUVRenderer);
 
         //        wH._createChart(_strFilterExpression, _scoreExp);
+
+
+        // Update Location Score if open
+        var pm = PanelManager.getInstance();
+        for (var p = 0; p < pm.panels.length; p++) {
+          if (pm.panels[p].label == 'Location Score') {
+            wH.publishData({
+              message: curParcelPieceUNIQID
+            });
+          }
+        }
+
 
       },
 

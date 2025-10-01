@@ -13,15 +13,15 @@ var aCommunityNames = [];
 
 var dCommunities = [];
 
-var sDistrictRGB = "rgba(102,102,229,0.6)"; //Blue color for to districts. Last value perhaps opacity?
+var sDistrictRGB = "rgba(102,102,229,0.6)"; //Blue color for to districts. Last value 'alpha' controls transparency.
 
 var sClickConfirmation = "Use mouse to select district(s) on map. Do not click on district label. Click button when done.";
 
 var dLandUseFilter = [
   { label: "All Land Uses", value: "'AG','EM','OS','CH','SF','MF','GQ','GO','ED','HE','RE','OF','IN','OT','UT','NB','NO'" },
-  { label: "Single-Family Residential", value: "'CH','SF'" },
-  //  { label: "All Other Land Uses"      , value: "'MF','GQ','GO','ED','HE','RE','OF','IN'"                                             }
-  { label: "All Other Land Uses", value: "'AG','EM','OS','MF','GQ','GO','ED','HE','RE','OF','IN','OT','UT','NB','NO'" }
+  { label: "Residential", value: "'SF','MF'" }, // Single Family, Multi Family
+  { label: "Commercial", value: "'HE','RE','OF','IN'"}//, // Heathcare, Retail, Office, Industrial
+  //{ label: "Undeveloped", value: "'AG','NB'"} // Agriculture, No Building
 ];
 
 var aCategories = ['CM', 'CU', 'CC', 'CN', 'AA', 'AT', 'TT', 'TF', 'TA', 'AC', 'AH', 'AE', 'AG', 'AM', 'AP'];
@@ -99,6 +99,10 @@ var cmbCommunities_Multi;
 var cmbCounty;
 
 var strSelectedPriorities = '';
+var curSlideCM = 1.0;
+
+var curSlideValues = {};
+
 
 define(['dojo/_base/declare',
   'dojo/dom',
@@ -106,6 +110,7 @@ define(['dojo/_base/declare',
   'dijit/form/CheckBox',
   'dojo/html',
   'dojo/domReady!',
+  'jimu/PanelManager',
   'esri/layers/FeatureLayer',
   'jimu/LayerInfos/LayerInfos',
   'dijit/form/Select',
@@ -121,8 +126,9 @@ define(['dojo/_base/declare',
   'esri/Color',
   'jimu/PanelManager',
   'esri/graphic',
-  'dojo/store/Memory'],
-  function (declare, dom, BaseWidget, CheckBox, html, domReady, FeatureLayer, LayerInfos, Select, Button, ComboBox, Query, QueryTask, Extent, UniqueValueRenderer, SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Color, PanelManager, Graphic, Memory) {
+  'dojo/store/Memory',
+  'dijit/form/HorizontalSlider'],
+  function (declare, dom, BaseWidget, CheckBox, html, domReady, PanelManager, FeatureLayer, LayerInfos, Select, Button, ComboBox, Query, QueryTask, Extent, UniqueValueRenderer, SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Color, PanelManager, Graphic, Memory, HorizontalSlider) {
     //To create a widget, you need to derive from BaseWidget.
     return declare([BaseWidget], {
       // Custom widget code goes here
@@ -143,12 +149,43 @@ define(['dojo/_base/declare',
       startup: function () {
         this.inherited(arguments);
         //this.mapIdNode.innerHTML = 'map id:' + this.map.id;
-        console.log('startup');
+        //console.log('startup');
 
         wH = this;
         this.map.setInfoWindowOnClick(false); // turn off info window (popup) when clicking a feature
 
         dom.byId('addText').innerHTML = sClickOnMapText;
+
+        //Widen the widget panel to provide more space for charts
+        var panel = this.getPanel();
+        var pos = panel.position;
+        //originalwidth = pos.width;
+        pos.width = 450;
+        panel.setPosition(pos);
+        panel.panelManager.normalizePanel(panel);
+
+        // Iterate over categories and create sliders
+        aCategories.forEach(function(cat) {
+          // initialize each slider's value (default 0.5, or use existing if needed)
+          curSlideValues[cat] = curSlideValues[cat] || 0.5;
+
+          // Create slider
+          new HorizontalSlider(
+            {
+              minimum: 0,
+              maximum: 1,
+              discreteValues: 11,
+              value: curSlideValues[cat],
+              intermediateChanges: true,
+              onChange: function () {
+                curSlideValues[cat] = this.value;
+                console.log("Slider " + cat + " changed → " + this.value);
+                wH._updateDisplay();
+              },
+            },
+            "horizslider" + cat // assumes you have divs with ids: horizsliderCM, horizsliderCU, etc.
+          ).startup();
+        });
 
         // Initialize Selection Layer, FromLayer, and ToLayer and define selection colors
         var layerInfosObject = LayerInfos.getInstanceSync();
@@ -202,7 +239,14 @@ define(['dojo/_base/declare',
         // set change event for categories
         for (let i = 0; i < aCategories.length; i++) {
           console.log('Set onchange events for ' + aCategories[i])
-          dom.byId('rank' + aCategories[i]).onchange = function () {
+          // check if 'rank' + XX exists
+          var obj;
+          if (isNaN(dom.byId('rank' + aCategories[i]))) {
+            obj = dom.byId('rank' + aCategories[i])
+          } else {
+            obj = dom.byId('horizslider' + aCategories[i])
+          }
+          obj.onchange = function () {
             // updated saved for use when switching between communities that may not have values category, which would set the value to zer
             aCategoryWeights_Saved[i] = this.value;
 
@@ -402,7 +446,12 @@ define(['dojo/_base/declare',
           // initialize as hidden
           dom.byId('row' + aCategories[i]).style.display = 'none';
           dom.byId('none' + aCategories[i]).style.display = 'table-row';
-          dom.byId('rank' + aCategories[i]).value = '0.0000';
+          if (isNaN(dom.byId('rank' + aCategories[i]))) {
+            priorityWidget = dom.byId('rank' + aCategories[i]);
+          } else {
+            priorityWidget = dom.byId('horizslider' + aCategories[i]);
+          }
+          priorityWidget.value = '0.0000';
           dom.byId('chk' + aCategories[i]).checked = false;
 
           // check if communities have categories
@@ -412,7 +461,7 @@ define(['dojo/_base/declare',
               dom.byId('row' + aCategories[i]).style.display = 'table-row';
               dom.byId('none' + aCategories[i]).style.display = 'none';
               //use saved value, which is last manually selected by user
-              dom.byId('rank' + aCategories[i]).value = aCategoryWeights_Saved[i];
+              priorityWidget.value = aCategoryWeights_Saved[i];
               // break out if one community has score available
               break;
             }
@@ -438,6 +487,7 @@ define(['dojo/_base/declare',
         var _strHig = '';
         var _strMed = '';
         var _strLow = '';
+        var _strSlide = '';
 
         maxScore_Places = 0.0;
         maxScore_Access = 0.0;
@@ -449,7 +499,14 @@ define(['dojo/_base/declare',
         aCategoryWeights = [];
 
         for (let i = 0; i < aCategories.length; i++) {
-          _value = parseFloat(dom.byId('rank' + aCategories[i]).value);
+          // get value from select
+          var _catSelect = dom.byId('rank' + aCategories[i])
+          if (isNaN(_catSelect)) {
+            _value = parseFloat(_catSelect.value);
+          } else {
+            // if no select, get value from slider
+            _value = curSlideValues[aCategories[i]];
+          }
           _scoreExp += " $feature." + aCategories[i] + " * " + String(_value)
 
           aCategoryWeights.push(_value);
@@ -476,18 +533,22 @@ define(['dojo/_base/declare',
             _scoreExp += " + ";
           }
 
-          switch (dom.byId('rank' + aCategories[i]).value) {
-            case '0.3333':
-              _strLow += aCategories_Names[i] + ", ";
-              break;
-            case '0.6667':
-              _strMed += aCategories_Names[i] + ", ";
-              break;
-            case '1.0000':
-              _strHig += aCategories_Names[i] + ", ";
-              break;
+          if (isNaN(_catSelect)) {
+            switch (dom.byId('rank' + aCategories[i]).value) {
+              case '0.3333':
+                _strLow += aCategories_Names[i] + ", ";
+                break;
+              case '0.6667':
+                _strMed += aCategories_Names[i] + ", ";
+                break;
+              case '1.0000':
+                _strHig += aCategories_Names[i] + ", ";
+                break;
+            }
+          } else {
+            // build string description of category and weight
+            _strSlide += aCategories_Names[i] + ": " + dom.byId('horizslider' + aCategories[i]).value  + ", ";
           }
-
         }
 
         maxPossible = maxScore_Places + maxScore_Access + maxScore_Transp + maxScore_Necess;
@@ -508,6 +569,10 @@ define(['dojo/_base/declare',
           strSelectedPriorities = 'Low Priority: ' + _strLow.substring(0, _strLow.length - 2);
         } else {
           strSelectedPriorities = '';
+        }
+
+        if (_strSlide.length > 0) {
+          strSelectedPriorities += "  Weights: " + _strSlide.substring(0, _strSlide.length - 2);
         }
 
         var vcUVRenderer = new UniqueValueRenderer({
@@ -537,18 +602,18 @@ define(['dojo/_base/declare',
       //    _createChart: function(_strFilterExpression, _scoreExp) {
       //        console.log('_createChart');
       //
-      //        var query = new Query();  
+      //        var query = new Query();
       //        query.returnGeometry = false;
       //        query.outFields = ["*"];
       //        query.where = _strFilterExpression;
       //
       //        var queryParcelPiece = new QueryTask(lyrParcelPieces.url);
       //        queryParcelPiece.execute(query,getAreasByClass);
-      //        
+      //
       //        //Segment search results
       //        function getAreasByClass(results) {
       //            console.log('getAreasByClass');
-      //        
+      //
       //            _area_class5 = 0;
       //            _area_class4 = 0;
       //            _area_class3 = 0;
@@ -560,23 +625,23 @@ define(['dojo/_base/declare',
       //                //use first feature only
       //                for (i=0;i<resultCount;i++) {
       //                    var featureAttributes = results.features[0].attributes;
-      //    
-      //                    _score = (featureAttributes[aCategories[00]] * aCategoryWeights[00]) + 
-      //                             (featureAttributes[aCategories[01]] * aCategoryWeights[01]) + 
-      //                             (featureAttributes[aCategories[02]] * aCategoryWeights[02]) + 
-      //                             (featureAttributes[aCategories[03]] * aCategoryWeights[03]) + 
-      //                             (featureAttributes[aCategories[04]] * aCategoryWeights[04]) + 
-      //                             (featureAttributes[aCategories[05]] * aCategoryWeights[05]) + 
-      //                             (featureAttributes[aCategories[06]] * aCategoryWeights[06]) + 
-      //                             (featureAttributes[aCategories[07]] * aCategoryWeights[07]) + 
-      //                             (featureAttributes[aCategories[08]] * aCategoryWeights[08]) + 
-      //                             (featureAttributes[aCategories[09]] * aCategoryWeights[09]) + 
-      //                             (featureAttributes[aCategories[10]] * aCategoryWeights[10]) + 
-      //                             (featureAttributes[aCategories[11]] * aCategoryWeights[11]) + 
-      //                             (featureAttributes[aCategories[12]] * aCategoryWeights[12]) + 
-      //                             (featureAttributes[aCategories[13]] * aCategoryWeights[13]) + 
+      //
+      //                    _score = (featureAttributes[aCategories[00]] * aCategoryWeights[00]) +
+      //                             (featureAttributes[aCategories[01]] * aCategoryWeights[01]) +
+      //                             (featureAttributes[aCategories[02]] * aCategoryWeights[02]) +
+      //                             (featureAttributes[aCategories[03]] * aCategoryWeights[03]) +
+      //                             (featureAttributes[aCategories[04]] * aCategoryWeights[04]) +
+      //                             (featureAttributes[aCategories[05]] * aCategoryWeights[05]) +
+      //                             (featureAttributes[aCategories[06]] * aCategoryWeights[06]) +
+      //                             (featureAttributes[aCategories[07]] * aCategoryWeights[07]) +
+      //                             (featureAttributes[aCategories[08]] * aCategoryWeights[08]) +
+      //                             (featureAttributes[aCategories[09]] * aCategoryWeights[09]) +
+      //                             (featureAttributes[aCategories[10]] * aCategoryWeights[10]) +
+      //                             (featureAttributes[aCategories[11]] * aCategoryWeights[11]) +
+      //                             (featureAttributes[aCategories[12]] * aCategoryWeights[12]) +
+      //                             (featureAttributes[aCategories[13]] * aCategoryWeights[13]) +
       //                             (featureAttributes[aCategories[14]] * aCategoryWeights[14]) ;
-      //    
+      //
       //                    if        (_score>maxPossible*0.80) {
       //                        _area_class5 += featureAttributes['Shape__Area'];
       //                    } else if (_score>maxPossible*0.60) {
@@ -655,12 +720,12 @@ define(['dojo/_base/declare',
 
       _expandCenters: function () {
         console.log('_expandCenters');
-        if (dom.byId("divCentersExpand").innerHTML == 'collapse') {
+        if (dom.byId("divCentersExpand").innerHTML == 'Collapse') {
           dom.byId("centerschoices").style.display = 'none';
-          dom.byId("divCentersExpand").innerHTML = 'expand';
+          dom.byId("divCentersExpand").innerHTML = 'Expand';
         } else {
           dom.byId("centerschoices").style.display = 'block';
-          dom.byId("divCentersExpand").innerHTML = 'collapse';
+          dom.byId("divCentersExpand").innerHTML = 'Collapse';
         }
       },
 
@@ -668,34 +733,34 @@ define(['dojo/_base/declare',
 
       _expandATO: function () {
         console.log('_expandATO');
-        if (dom.byId("divATOExpand").innerHTML == 'collapse') {
+        if (dom.byId("divATOExpand").innerHTML == 'Collapse') {
           dom.byId("atochoices").style.display = 'none';
-          dom.byId("divATOExpand").innerHTML = 'expand';
+          dom.byId("divATOExpand").innerHTML = 'Expand';
         } else {
           dom.byId("atochoices").style.display = 'block';
-          dom.byId("divATOExpand").innerHTML = 'collapse';
+          dom.byId("divATOExpand").innerHTML = 'Collapse';
         }
       },
 
       _expandTransportation: function () {
         console.log('_expandTransportation');
-        if (dom.byId("divTransportationExpand").innerHTML == 'collapse') {
+        if (dom.byId("divTransportationExpand").innerHTML == 'Collapse') {
           dom.byId("transportationchoices").style.display = 'none';
-          dom.byId("divTransportationExpand").innerHTML = 'expand';
+          dom.byId("divTransportationExpand").innerHTML = 'Expand';
         } else {
           dom.byId("transportationchoices").style.display = 'block';
-          dom.byId("divTransportationExpand").innerHTML = 'collapse';
+          dom.byId("divTransportationExpand").innerHTML = 'Collapse';
         }
       },
 
       _expandAmenities: function () {
         console.log('_expandAmenities');
-        if (dom.byId("divAmenitiesExpand").innerHTML == 'collapse') {
+        if (dom.byId("divAmenitiesExpand").innerHTML == 'Collapse') {
           dom.byId("amenitieschoices").style.display = 'none';
-          dom.byId("divAmenitiesExpand").innerHTML = 'expand';
+          dom.byId("divAmenitiesExpand").innerHTML = 'Expand';
         } else {
           dom.byId("amenitieschoices").style.display = 'block';
-          dom.byId("divAmenitiesExpand").innerHTML = 'collapse';
+          dom.byId("divAmenitiesExpand").innerHTML = 'Collapse';
         }
       },
 
@@ -719,22 +784,22 @@ define(['dojo/_base/declare',
           // QueryTask returns a featureSet.  Loop through features in the featureSet and add them to the map.
           if (featureSet.features.length > 0) {
             if (featureSet.features[0].geometry.type == "polyline" || featureSet.features[0].geometry.type == "polygon") {
-              // clearing any graphics if present. 
+              // clearing any graphics if present.
               wH.map.graphics.clear();
               newExtent = new Extent(featureSet.features[0].geometry.getExtent())
               for (i = 0; i < featureSet.features.length; i++) {
                 var graphic = featureSet.features[i];
                 var thisExtent = graphic.geometry.getExtent();
 
-                // making a union of extent or previous feature and current feature. 
+                // making a union of extent or previous feature and current feature.
                 newExtent = newExtent.union(thisExtent);
                 //var _sfs = new SimpleFillSymbol(SimpleFillSymbol.STYLE_NULL,
                 //    new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
                 //    new Color("#6b39fd"), 5),new Color([0,0,0,0])
                 //);
-                //graphic.setSymbol(_sfs); 
-                //graphic.setInfoTemplate(popupTemplate); 
-                //wH.map.graphics.add(graphic); 
+                //graphic.setSymbol(_sfs);
+                //graphic.setInfoTemplate(popupTemplate);
+                //wH.map.graphics.add(graphic);
               }
 
 
@@ -769,7 +834,7 @@ define(['dojo/_base/declare',
 
       _turnoffall: function () {
         for (let i = 0; i < aCategories.length; i++) {
-          dom.byId('rank' + aCategories[i]).value = "0.0000";
+          dom.byId('horizslider' + aCategories[i]).value = "0.0000";
           aCategoryWeights_Saved[i] = "0.0000";
         }
         wH._updateDisplay();

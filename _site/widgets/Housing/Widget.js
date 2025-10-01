@@ -103,6 +103,11 @@ var curSlideCM = 1.0;
 
 var curSlideValues = {};
 
+var hoverMode = false;          // only true after first click opens Location Score
+var _hoverHandle = null;        // map mouse-move handler
+var _hoverTimer = null;         // debounce timer
+var HOVER_DELAY = 0;            // ms; tweak if you like
+var lastHoverOID = null;        // track last hovered parcel piece
 
 define(['dojo/_base/declare',
   'dojo/dom',
@@ -128,8 +133,9 @@ define(['dojo/_base/declare',
   'esri/graphic',
   'dojo/store/Memory',
   'dijit/form/HorizontalSlider',
-  'dijit/registry'],
-  function (declare, dom, BaseWidget, CheckBox, html, domReady, PanelManager, FeatureLayer, LayerInfos, Select, Button, ComboBox, Query, QueryTask, Extent, UniqueValueRenderer, SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Color, PanelManager, Graphic, Memory, HorizontalSlider, registry) {
+  'dijit/registry',
+  'dojo/_base/lang'],
+  function (declare, dom, BaseWidget, CheckBox, html, domReady, PanelManager, FeatureLayer, LayerInfos, Select, Button, ComboBox, Query, QueryTask, Extent, UniqueValueRenderer, SimpleFillSymbol, SimpleLineSymbol, SimpleMarkerSymbol, Color, PanelManager, Graphic, Memory, HorizontalSlider, registry, lang) {
     //To create a widget, you need to derive from BaseWidget.
     return declare([BaseWidget], {
       // Custom widget code goes here
@@ -267,6 +273,25 @@ define(['dojo/_base/declare',
         //setup click functionality
         this.map.on('click', selectParcelPiece);
 
+        // Live hover to update Location Score after first click
+        _hoverHandle = this.map.on('mouse-move', lang.hitch(this, function (evt) {
+          if (!hoverMode) { return; }
+
+          // Only do work if the Location Score panel is actually open
+          var pm = PanelManager.getInstance();
+          var scoreOpen = false;
+          for (var p = 0; p < pm.panels.length; p++) {
+            if (pm.panels[p].label === 'Location Score') { scoreOpen = true; break; }
+          }
+          if (!scoreOpen) { return; }
+
+          // Debounce queries so we don't spam the service while moving the mouse
+          if (_hoverTimer) { clearTimeout(_hoverTimer); }
+          _hoverTimer = setTimeout(lang.hitch(this, function () {
+            this._hoverQueryParcel(evt);
+          }), HOVER_DELAY);
+        }));
+
         function pointToExtent(map, point, toleranceInPixel) {
           var pixelWidth = wH.map.extent.getWidth() / wH.map.width;
           var toleranceInMapCoords = toleranceInPixel * pixelWidth;
@@ -387,12 +412,58 @@ define(['dojo/_base/declare',
                     wH.publishData({
                       message: curParcelPieceUNIQID
                     });
+
+                    hoverMode = true; // enable hover updates after first click
+
                   }
                 }
               }
             }
           }
         }
+      },
+
+      _hoverQueryParcel: function (evt) {
+        // Reuse your pointToExtent helper from startup:
+        function pointToExtent(map, point, toleranceInPixel) {
+          var pixelWidth = wH.map.extent.getWidth() / wH.map.width;
+          var toleranceInMapCoords = toleranceInPixel * pixelWidth;
+          return new Extent(point.x - toleranceInMapCoords,
+            point.y - toleranceInMapCoords,
+            point.x + toleranceInMapCoords,
+            point.y + toleranceInMapCoords,
+            wH.map.spatialReference);
+        }
+
+        var query = new Query();
+        query.geometry = pointToExtent(this.map, evt.mapPoint, iPixelSelectionTolerance);
+        query.returnGeometry = false;
+        query.outFields = ["OBJECTID"];
+
+        var queryParcelPiece = new QueryTask(lyrParcelPieces.url);
+        queryParcelPiece.execute(query, lang.hitch(this, function (results) {
+          if (!results || results.features.length === 0) { return; }
+
+          var oid = results.features[0].attributes['OBJECTID'];
+          if (oid === lastHoverOID) { return; } // nothing new under the cursor
+
+          lastHoverOID = oid;
+          curParcelPieceUNIQID = oid;
+
+          // Update the location marker (reuse your look & feel)
+          var symbol = new SimpleMarkerSymbol().setSize(15).setColor(new Color("#6b39fd"));
+          var graphic = new Graphic(evt.mapPoint, symbol);
+
+          if (bLocationGraphic) {
+            this.map.graphics.clear();
+            bLocationGraphic = false;
+          }
+          this.map.graphics.add(graphic);
+          bLocationGraphic = true;
+
+          // Push to Location Score widget
+          this.publishData({ message: curParcelPieceUNIQID });
+        }));
       },
 
       _showLegend: function () {
@@ -854,15 +925,18 @@ define(['dojo/_base/declare',
           aCategoryWeights_Saved[i] = 0;
         }
         wH._updateDisplay();
-      }
+      },
 
       // onOpen: function(){
       //   console.log('onOpen');
       // },
 
-      // onClose: function(){
-      //   console.log('onClose');
-      // },
+      onClose: function () {
+        if (_hoverHandle) { _hoverHandle.remove(); _hoverHandle = null; }
+        if (_hoverTimer) { clearTimeout(_hoverTimer); _hoverTimer = null; }
+        hoverMode = false;
+        lastHoverOID = null;
+      }
 
       // onMinimize: function(){
       //   console.log('onMinimize');
